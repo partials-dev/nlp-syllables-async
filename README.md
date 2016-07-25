@@ -24,7 +24,7 @@ nlp.termWithSyllables('simplicity').then(term => {
 })
 
 nlp.text('simple is different from easy').termsWithSyllables().then(terms => {
-  var allSyllables = terms.map(t => t.syllables)
+  const allSyllables = terms.map(t => t.syllables)
   console.log(JSON.stringify(allSyllables))
   // output:
   // [
@@ -36,7 +36,16 @@ nlp.text('simple is different from easy').termsWithSyllables().then(terms => {
   // ]
 })
 
-nlp.term('indeterminacy').getSyllables
-
-//
+nlp.term('indeterminacy').getSyllablesAsync().then(syllables => {
+  console.log(syllables)
+  // output:
+  // [
+  //  'in',
+  //  'de',
+  //  'ter',
+  //  'mi',
+  //  'na',
+  //  'cy'
+  // ]
+})
 ```
