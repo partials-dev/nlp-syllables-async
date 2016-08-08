@@ -4,6 +4,7 @@ import scrape from './scrape'
 import _ from 'lodash'
 import nlp from 'nlp_compromise'
 import nlpSyllables from 'nlp-syllables'
+import fallbackOnTimeout from 'fallback-on-timeout'
 nlp.plugin(nlpSyllables)
 
 const syllableDelimiter = '·'
@@ -11,7 +12,10 @@ const selector = '[data-syllable]'
 
 function lookup (word) {
   const url = `http://www.dictionary.com/browse/${word}`
-  return scrape(url, selector).then(results => findMatch(word, results))
+  return scrape(url, selector).then(results => {
+    const match = findMatch(word, results)
+    return match[0].attribs['data-syllable'].split(syllableDelimiter)
+  })
 }
 
 function identicalMatch (word, scraped) {
@@ -36,19 +40,12 @@ function findMatch (word, results) {
   return match
 }
 
-function getOrGuessSyllables (word, result) {
-  if (result) {
-    return result[0].attribs['data-syllable'].split(syllableDelimiter)
-  } else {
-    return nlp.term(word).syllables()
-  }
-}
-
 export default function getSyllablesForWord (word) {
-  return lookup(word).then((result) =>
-    getOrGuessSyllables(word, result)
-  ).catch((err) => {
-    console.log(`Got an error: ${JSON.stringify(err)}`)
-    return nlp.term(word).syllables()
-  })
+  const lookupSyllables = () => lookup(word)
+  const guessSyllables = () => nlp.term(word).syllables()
+  return fallbackOnTimeout(lookupSyllables, guessSyllables, 5000)
+    .catch((err) => {
+      console.log(`Got an error looking up syllables: ${JSON.stringify(err)}`)
+      return guessSyllables()
+    })
 }

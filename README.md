@@ -2,9 +2,10 @@
 A [plugin](https://github.com/nlp-compromise/nlp_compromise/wiki/Plugins) for [nlp_compromise](https://github.com/nlp-compromise/nlp_compromise) that splits words into syllables.
 
 # Features
-- Asynchronous: it can pull high quality syllable data from the network.
-- Cached: it avoids making duplicate network requests.
-- Promise-based: it's not annoying.
+- Asynchronous: pulls high quality syllable data from the network.
+- Cached: avoids making duplicate network requests.
+- Promise-based: more fun.
+- Uses time-outs: if querying the network takes too long, guesses the syllables using `nlp-syllables`.
 
 # Installation and Usage
 
@@ -20,7 +21,7 @@ nlp.plugin(syllables)
 nlp.termWithSyllables('simplicity').then(term => {
   const syllables = JSON.stringify(term.syllables)
   console.log(syllables)
-  // output is ['sim', 'plic', 'i', 'ty']
+  // output: ['sim', 'plic', 'i', 'ty']
 })
 
 nlp.text('simple is different from easy').termsWithSyllables().then(terms => {
