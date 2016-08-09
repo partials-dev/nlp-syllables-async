@@ -1,7 +1,8 @@
 'use babel'
 
 import SyllableDictionary from './syllable-dictionary'
-var dictionary = new SyllableDictionary()
+const defaultTimeout = 1000
+var dictionary = new SyllableDictionary(null, defaultTimeout)
 
 function getTermWithSyllables (term) {
   return dictionary.getSyllables(term.normal).then(syllables => {
@@ -25,15 +26,21 @@ const textAndTermPlugin = {
   }
 }
 
-const cacheFunctions = {
+const settings = {
+  timeout: defaultTimeout,
   clearCache () {
     dictionary.clearCache()
   },
   setCacheEntries (entries) {
-    dictionary = new SyllableDictionary(entries)
+    dictionary = new SyllableDictionary(entries, this.timeout)
   },
   serializeCache () {
     return dictionary.serialize()
+  },
+  setTimeout (timeout) {
+    this.timeout = timeout
+    const serialized = this.serializeCache()
+    this.setCacheEntries(serialized)
   }
 }
 
@@ -42,7 +49,7 @@ export default function syllablesAsyncPlugin (nlp) {
     const term = nlp.term(...args)
     return getTermWithSyllables(term)
   }
-  nlp.syllables = cacheFunctions
+  nlp.syllables = settings
   return textAndTermPlugin
 }
 

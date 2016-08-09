@@ -11,8 +11,9 @@ function setIfDoesNotExist (cache, key, value) {
 
 export default function cacheFunction (func) {
   var cache = new Cache()
-  const cachedFunction = (key) => {
-    const value = cache.get(key) || func(key)
+  const cachedFunction = (...args) => {
+    const key = args[0]
+    const value = cache.get(key) || func(...args)
     setIfDoesNotExist(cache, key, value)
     return value
   }

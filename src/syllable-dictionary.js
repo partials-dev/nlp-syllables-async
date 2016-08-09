@@ -11,15 +11,16 @@ function getType (text) {
 }
 
 export default class SyllableDictionary {
-  constructor (cacheEntries) {
+  constructor (cacheEntries, timeout) {
     const getCachedSyllablesForWord = cacheFunction(getSyllablesForWord, cacheEntries)
     this.getCachedSyllablesForWord = getCachedSyllablesForWord
+    this.timeout = timeout
   }
   getSyllables (text) {
     switch (getType(text)) {
       case 'array': return this.getSyllablesForArray(text)
       case 'phrase': return this.getSyllablesForPhrase(text)
-      case 'word': return this.getCachedSyllablesForWord(text)
+      case 'word': return this.getCachedSyllablesForWord(text, this.timeout)
     }
   }
   getSyllablesForArray (array) {

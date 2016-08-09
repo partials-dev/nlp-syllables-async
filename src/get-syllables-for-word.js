@@ -43,10 +43,10 @@ function findMatch (word, results) {
   return match
 }
 
-export default function getSyllablesForWord (word) {
+export default function getSyllablesForWord (word, timeout) {
   const lookupSyllables = () => lookup(word)
   const guessSyllables = () => nlp.term(word).syllables()
-  return fallbackOnTimeout(lookupSyllables, guessSyllables, 5000)
+  return fallbackOnTimeout(lookupSyllables, guessSyllables, timeout)
     .catch((err) => {
       console.log(`Got an error looking up syllables: ${JSON.stringify(err)}`)
       return guessSyllables()
