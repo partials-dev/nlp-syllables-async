@@ -14,7 +14,10 @@ function lookup (word) {
   const url = `http://www.dictionary.com/browse/${word}`
   return scrape(url, selector).then(results => {
     const match = findMatch(word, results)
-    return match[0].attribs['data-syllable'].split(syllableDelimiter)
+    var syllableData = match[0].attribs['data-syllable'].split(syllableDelimiter)
+    const format = syllable => syllable.replace(/[^a-z]/gi, '').trim()
+    syllableData = syllableData.map(format)
+    return syllableData
   })
 }
 
