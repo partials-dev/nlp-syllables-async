@@ -1,6 +1,6 @@
 {
   "name": "nlp-syllables-async",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Plugin for nlp_compromise that extracts syllables from words",
   "main": "lib/nlp-syllables-async.js",
   "scripts": {
