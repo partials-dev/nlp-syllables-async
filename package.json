@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode=build",
     "dev": "webpack --progress --colors --watch --mode=dev",
-    "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js"
+    "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js",
+    "start": "open --hide --background -a Terminal.app ./npm-run-dev.sh && open --hide --background -a Terminal.app ./npm-run-test.sh"
   },
   "devDependencies": {
     "babel": "6.3.13",
