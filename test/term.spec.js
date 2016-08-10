@@ -6,14 +6,15 @@ chai.use(chaiAsPromised)
 
 import nlp from 'nlp_compromise'
 import nlpSyllables from '../lib/nlp-syllables-async'
+nlp.plugin(nlpSyllables)
 
 const expect = chai.expect
 
-before(() => nlp.plugin(nlpSyllables))
-
 describe('Term', () => {
+  after(() => nlp.syllables.clearCache())
+  
   var term
-  before(() => term = nlp.term('syllable'))
+  before(() => term = nlp.term('example'))
 
   describe('#getSyllablesAsync', () => {
     var getSyllables
@@ -34,7 +35,7 @@ describe('Term', () => {
       return expect(getSyllables).to.eventually.have.lengthOf(3)
     })
     it('should resolve to the correct syllables', () => {
-      return expect(getSyllables).to.eventually.eql(['syl', 'la', 'ble'])
+      return expect(getSyllables).to.eventually.eql(['ex', 'am', 'ple'])
     })
   })
 })

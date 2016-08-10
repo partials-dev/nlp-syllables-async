@@ -13,9 +13,17 @@ export default function cacheFunction (func) {
   var cache = new Cache()
   const cachedFunction = (...args) => {
     const key = args[0]
-    const value = cache.get(key) || func(...args)
-    setIfDoesNotExist(cache, key, value)
-    return value
+    const cached = cache.get(key)
+    var prom
+    if (cached == null) {
+      prom = func(...args)
+    } else {
+      prom = Promise.resolve(cached)
+    }
+    prom.then(value => {
+      setIfDoesNotExist(cache, key, value)
+    })
+    return prom
   }
   cachedFunction.clearCache = () => {
     cache = null

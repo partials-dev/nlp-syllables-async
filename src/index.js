@@ -1,5 +1,3 @@
-'use babel'
-
 import SyllableDictionary from './syllable-dictionary'
 const defaultTimeout = 1000
 var dictionary = new SyllableDictionary(null, defaultTimeout)
