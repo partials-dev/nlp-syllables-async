@@ -1,4 +1,4 @@
-/* global describe, before, it */
+/* global describe, it, afterEach */
 
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
@@ -11,10 +11,9 @@ nlp.plugin(nlpSyllables)
 const expect = chai.expect
 
 describe('nlp', () => {
+  afterEach(() => nlp.syllables.clearCache())
   describe('::syllables', () => {
     describe('::serializeCache', () => {
-      afterEach(() => nlp.syllables.clearCache())
-
       it('[0 lookups] should return an empty array', () => {
         const cache = nlp.syllables.serializeCache()
         expect(cache).to.eql([])
@@ -52,6 +51,34 @@ describe('nlp', () => {
           nlp.syllables.clearCache()
           cache = nlp.syllables.serializeCache()
           expect(cache).to.eql([])
+        })
+      })
+      it('should behave the same when called multiple times', () => {
+        return nlp.termWithSyllables('example').then(() => {
+          var cache = nlp.syllables.serializeCache()
+          expect(cache).to.have.lengthOf(1)
+
+          nlp.syllables.clearCache()
+          nlp.syllables.clearCache()
+          cache = nlp.syllables.serializeCache()
+          expect(cache).to.eql([])
+        })
+      })
+    }),
+    describe('::setCacheEntries', () => {
+      it('should use the same data format as `::serializeCache`', () => {
+        return nlp.termWithSyllables('example').then(() => {
+          var populatedCache = nlp.syllables.serializeCache()
+          expect(populatedCache).to.have.lengthOf(1)
+
+          nlp.syllables.clearCache()
+          var emptyCache = nlp.syllables.serializeCache()
+          expect(emptyCache).to.eql([])
+
+          nlp.syllables.clearCache()
+          nlp.syllables.setCacheEntries(populatedCache)
+          var newCache = nlp.syllables.serializeCache()
+          expect(newCache).to.eql(populatedCache)
         })
       })
     })

@@ -8,10 +8,11 @@
 // call fallback and return its result.
 export default function fallbackOnTimeout (func, fallback, waitTime) {
   return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
+    const useFallback = () => {
       const result = fallback()
       resolve(result)
-    }, waitTime)
+    }
+    const timeoutId = setTimeout(useFallback, waitTime)
 
     func().then(result => {
       clearTimeout(timeoutId)

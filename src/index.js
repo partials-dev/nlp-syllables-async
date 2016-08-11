@@ -1,7 +1,6 @@
 import SyllableDictionary from './syllable-dictionary'
 const defaultTimeout = 1000
 var dictionary = new SyllableDictionary(null, defaultTimeout)
-
 function getTermWithSyllables (term) {
   return dictionary.getSyllables(term.normal).then(syllables => {
     term.syllables = syllables
@@ -38,7 +37,7 @@ const settings = {
   setTimeout (timeout) {
     this.timeout = timeout
     const serialized = this.serializeCache()
-    this.setCacheEntries(serialized)
+    dictionary = new SyllableDictionary(serialized, this.timeout)
   }
 }
 
