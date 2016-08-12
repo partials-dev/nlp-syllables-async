@@ -6,7 +6,7 @@
 // from func after the waitTime has elapsed, we
 // call fallback and return its result.
 export default function fallbackOnTimeout (func, fallback, waitTime) {
-  const prom = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       const useFallback = () => {
         const result = fallback()
@@ -22,5 +22,4 @@ export default function fallbackOnTimeout (func, fallback, waitTime) {
       reject(e)
     }
   })
-  return prom
 }
