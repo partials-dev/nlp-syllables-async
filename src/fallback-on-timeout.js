@@ -1,4 +1,3 @@
-
 // func is an asynchronous function; fallback
 // is synchronous.
 //
@@ -7,16 +6,21 @@
 // from func after the waitTime has elapsed, we
 // call fallback and return its result.
 export default function fallbackOnTimeout (func, fallback, waitTime) {
-  return new Promise((resolve, reject) => {
-    const useFallback = () => {
-      const result = fallback()
-      resolve(result)
-    }
-    const timeoutId = setTimeout(useFallback, waitTime)
+  const prom = new Promise((resolve, reject) => {
+    try {
+      const useFallback = () => {
+        const result = fallback()
+        resolve(result)
+      }
+      const timeoutId = setTimeout(useFallback, waitTime)
 
-    func().then(result => {
-      clearTimeout(timeoutId)
-      resolve(result)
-    })
+      func().then(result => {
+        clearTimeout(timeoutId)
+        resolve(result)
+      })
+    } catch (e) {
+      reject(e)
+    }
   })
+  return prom
 }

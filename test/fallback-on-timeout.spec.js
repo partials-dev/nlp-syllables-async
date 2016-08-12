@@ -1,4 +1,4 @@
-/* global describe, it, before, beforeEach, afterEach, xit */
+/* global describe, it, beforeEach */
 
 import chai from 'chai'
 import sinon from 'sinon'
@@ -16,20 +16,17 @@ const expect = chai.expect
 describe('fallbackOnTimeout', function () {
   // var clock
   // this.timeout(10000)
-  // before(() => clock = sinon.useFakeTimers())
+  // beforeEach(function () clock = sinon.useFakeTimers())
 
-  var waitTime
-  var fallbackAfter
+  var waitTime = 500
+  var fallbackAfter = waitTime / 2
   var slowPromise
   var slowFunc
   var fallback
   var fallbackPromise
   var slowPromiseThen
   var fallbackPromiseThen
-  beforeEach(() => {
-    waitTime = 500
-    fallbackAfter = waitTime / 2
-
+  beforeEach(function () {
     slowPromise = new Promise((resolve, reject) => {
       setTimeout(resolve, waitTime)
     })
@@ -42,47 +39,56 @@ describe('fallbackOnTimeout', function () {
     fallbackPromiseThen = sinon.stub()
     fallbackPromise.then(fallbackPromiseThen)
   })
-  // afterEach(() => clock.restore())
+  // afterEach(function () clock.restore())
 
-  describe('if fallback time is not reached', () => {
-    // beforeEach(() => clock.tick(fallbackAfter - 0.5))
-    it('should not have fulfilled the slow promise', (done) => {
+  describe('if fallback time is not reached', function () {
+    // beforeEach(function () clock.tick(fallbackAfter - 0.5))
+    it('should not have fulfilled the slow promise', function (done) {
       setTimeout(() => {
         expect(slowPromiseThen).to.have.not.been.called
         done()
       }, fallbackAfter - 50)
     })
-    it('should have only called the correct functions', () => {
+    it('should have only called the correct functions', function () {
       expect(slowFunc).to.have.been.called
       expect(fallback).to.have.not.been.called
     })
-    it('should not have fulfilled the fallback promise', (done) => {
+    it('should not have fulfilled the fallback promise', function (done) {
       setTimeout(() => {
         expect(fallbackPromiseThen).to.have.not.been.called
         done()
       }, fallbackAfter - 50)
     })
   })
-  describe('if fallback time is reached', () => {
-    // beforeEach(() => clock.tick(fallbackAfter + 1))
-    it('should not have fulfilled the slow promise', (done) => {
+  describe('if fallback time is reached', function () {
+    // beforeEach(function () clock.tick(fallbackAfter + 1))
+    it('should not have fulfilled the slow promise', function (done) {
       setTimeout(() => {
         expect(slowPromiseThen).to.have.not.been.called
         done()
       }, fallbackAfter + 10)
     })
-    it('should have fulfilled the fallback promise', () => {
-      expect(fallbackPromiseThen).to.have.been.called
+    it('should have fulfilled the fallback promise', function (done) {
+      setTimeout(() => {
+        expect(fallbackPromiseThen).to.have.been.called
+        done()
+      }, fallbackAfter + 10)
     })
-    xit('should have called both the slow and fallback functions', () => {
-      expect(slowFunc).to.have.been.called
-      expect(fallback).to.have.been.called
+    it('should have called both the slow and fallback functions', function (done) {
+      setTimeout(() => {
+        expect(slowFunc).to.have.been.called
+        expect(fallback).to.have.been.called
+        done()
+      }, fallbackAfter + 10)
     })
   })
-  // describe('if waitTime is reached', () => {
-  //   beforeEach(() => clock.tick(waitTime + 1))
-  //   it('should have resolved the slow promise', () => {
-  //     return expect(slowPromise).to.be.fulfilled
-  //   })
-  // })
+  describe('if waitTime is reached', function () {
+    // beforeEach(function () clock.tick(waitTime + 1))
+    it('should have resolved the slow promise', function (done) {
+      setTimeout(() => {
+        expect(slowPromiseThen).to.have.been.called
+        done()
+      }, waitTime + 10)
+    })
+  })
 })
